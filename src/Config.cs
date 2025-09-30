@@ -6,7 +6,6 @@
         public static bool AutoStart { get; set; } = true;
         public static bool AutoGame { get; set; } = false;
         public static bool UseNitros { get; set; } = false;
-        public static bool GodMode { get; set; } = false;
 
         // Base Ints
         public static int TypingRate { get; set; } = 100;
@@ -18,5 +17,8 @@
 
         // Internal Runtime Settings
         public static bool CheatRunning { get; set; } = false;
+
+        // External Links
+        public static string DiscordLink { get; set; } = "https://www.nitrotype.com/team/EXAM";
     }
 }

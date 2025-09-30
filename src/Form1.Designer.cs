@@ -32,7 +32,6 @@
             webView = new Microsoft.Web.WebView2.WinForms.WebView2();
             controls = new Panel();
             discord = new Button();
-            godmode = new CheckBox();
             usenitros = new CheckBox();
             autogame = new CheckBox();
             autostart = new CheckBox();
@@ -72,7 +71,6 @@
             // 
             controls.BackColor = Color.FromArgb(46, 49, 65);
             controls.Controls.Add(discord);
-            controls.Controls.Add(godmode);
             controls.Controls.Add(usenitros);
             controls.Controls.Add(autogame);
             controls.Controls.Add(autostart);
@@ -107,25 +105,9 @@
             discord.Name = "discord";
             discord.Size = new Size(190, 30);
             discord.TabIndex = 0;
-            discord.Text = "Join Discord";
+            discord.Text = "Join Team";
             discord.UseVisualStyleBackColor = false;
             discord.Click += UI_Click_Discord;
-            // 
-            // godmode
-            // 
-            godmode.Cursor = Cursors.Hand;
-            godmode.FlatAppearance.BorderColor = Color.FromArgb(214, 47, 58);
-            godmode.FlatAppearance.CheckedBackColor = Color.FromArgb(214, 47, 58);
-            godmode.FlatAppearance.MouseDownBackColor = Color.FromArgb(214, 47, 58);
-            godmode.FlatAppearance.MouseOverBackColor = Color.FromArgb(214, 47, 58);
-            godmode.Font = new Font("Segoe UI", 10F);
-            godmode.ForeColor = Color.White;
-            godmode.Location = new Point(5, 327);
-            godmode.Name = "godmode";
-            godmode.Size = new Size(104, 24);
-            godmode.TabIndex = 0;
-            godmode.Text = "God Mode";
-            godmode.CheckedChanged += UI_Update_Godmode;
             // 
             // usenitros
             // 
@@ -334,7 +316,6 @@
         private CheckBox autostart;
         private CheckBox autogame;
         private CheckBox usenitros;
-        private CheckBox godmode;
         private Button discord;
     }
 }

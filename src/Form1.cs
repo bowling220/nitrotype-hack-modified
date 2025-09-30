@@ -149,41 +149,11 @@ namespace NitroType3
             Config.UseNitros = usenitros.Checked;
         }
 
-        private void UI_Update_Godmode(object? sender, EventArgs e)
-        {
-            if (Config.GodMode)
-            {
-                Logger.Log("God Mode Value Changed:False");
-                godmode.Checked = false;
-                Config.GodMode = false;
-            }
-            else
-            {
-                DialogResult GodmodeConsent = MessageBox.Show(
-                    "God Mode removes all typing limits and uses max accuracy. It's highly likely your account will be banned if you use it, continue?",
-                    "God Mode Warning",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning
-                );
-
-                if (GodmodeConsent == DialogResult.Yes)
-                {
-                    Logger.Log("God Mode Value Changed:True");
-                    Config.GodMode = true;
-                }
-                else
-                {
-                    godmode.CheckedChanged -= UI_Update_Godmode;
-                    godmode.Checked = false;
-                    godmode.CheckedChanged += UI_Update_Godmode;
-                }
-            }
-        }
 
         private void UI_Click_Discord(object sender, EventArgs e)
         {
             Logger.Log("Discord Button Clicked");
-            Connections.OpenLink(BuildEnvironment.DiscordLink);
+            Connections.OpenLink(Config.DiscordLink);
         }
 
         private async void UI_Click_Start(object sender, EventArgs e)

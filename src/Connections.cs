@@ -6,45 +6,14 @@ namespace NitroType3
     {
         public static void UsageReport()
         {
-            HttpClient client = new();
-
-            HttpRequestMessage req = new()
-            {
-                RequestUri = BuildEnvironment.PerformanceEndpoint,
-                Method = HttpMethod.Post,
-                Content = new StringContent("{\"project\":\"NitroTypeHack2\"}", Encoding.UTF8, "application/json"),
-            };
-
-            req.Headers.Add("origin", BuildEnvironment.PerfValidEndpoint);
-
-            try
-            {
-                client.Send(req);
-            }
-            catch (Exception) { }
+            // Usage reporting disabled - BuildEnvironment.cs was excluded from repository
+            Logger.Log("Usage reporting disabled");
         }
 
         public static void ErrorReport(string? errorMessage = "Unknown", string? stackTrace = "Unknown")
         {
-            HttpClient client = new();
-
-            if (stackTrace != null)
-            {
-                string safeStackTrace = stackTrace.Replace("\r", "").Replace("\n", "").Replace("\"", "\'").Replace("\\", "\\\\");
-
-                HttpRequestMessage req = new()
-                {
-                    RequestUri = BuildEnvironment.ErrorReportingEndpoint,
-                    Method = HttpMethod.Post,
-                    Content = new StringContent("{\"a\":\"" + errorMessage + "\",\"b\":\"None\",\"c\":0,\"d\":0,\"e\":\"" + safeStackTrace + "\",\"f\":\"NitroType Cheat v" + Updates.VersionCode + "\"}", Encoding.UTF8, "application/json"),
-                };
-
-                try
-                {
-                    client.Send(req);
-                }
-                catch (Exception) { }
-            }
+            // Error reporting disabled - BuildEnvironment.cs was excluded from repository
+            Logger.Log("Error reporting disabled: " + errorMessage);
         }
 
         public static void OpenLink(string url)

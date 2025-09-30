@@ -31,10 +31,10 @@ namespace NitroType3
                 MessageBox.Show(
                     "This program is not supported on your device. (GetThreadDpiHostingBehavior not in DLL USER32.dll)",
                     "Fatal Error",
-                    MessageBoxButtons.Ok,
+                    MessageBoxButtons.OK,
                     MessageBoxIcon.Information
                 );
-                return 0;
+                return;
             }
         }
 

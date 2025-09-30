@@ -12,12 +12,11 @@ namespace NitroType3
             int TypingRate = CalculateVariancy(Config.TypingRate, Config.TypingRateVariancy, Min: 10);
             int Accuracy = CalculateVariancy(Config.Accuracy, Config.AccuracyVariancy, Max: 100);
 
-            if (Config.GodMode) Accuracy = 100;
 
             Logger.Log("Calculated Race Specific Typing Rate:" + TypingRate.ToString());
             Logger.Log("Calculated Race Specific Accuracy:" + Accuracy.ToString());
 
-            if (Config.UseNitros && !Config.GodMode) {
+            if (Config.UseNitros) {
                 string[] Words = Text.Split('\u00A0');
 
                 Words = ReplaceLongest(Words, "ʜ");
@@ -70,9 +69,7 @@ namespace NitroType3
                     MissIndex++;
                 }
 
-                if (!Config.GodMode) {
-                    await Task.Delay((int)( Math.Sin(i) * 10 + TypingRate ));
-                }
+                await Task.Delay((int)( Math.Sin(i) * 10 + TypingRate ));
             }
 
             if (Config.AutoGame)
