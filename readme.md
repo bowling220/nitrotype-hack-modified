@@ -1,16 +1,16 @@
-# NitroType Cheat v2
+# NitroType Cheat v2 - Modified by Blaine Oler
 
 ## How to Use
 
-1. Click this [**link**](https://github.com/kgsensei/NitroTypeHack2/releases/latest).
-2. Click on the button that says `nitroTypeInstaller.exe`.
-3. Click run the installer you downloaded.
+1. Click this [**link**](https://github.com/bowling220/nitrotype-hack-modified/releases/latest).
+2. Download `NitroType3.exe` from the latest release.
+3. Run the executable.
 4. Open up the cheat application.
 5. Enjoy!
 
 ## Help/Support
 
-This project has been discontinued. I will continue to merge pull requests however I will not be actively developing this project anymore. Thanks for your continued support.
+Modified version by Blaine Oler. Original project by kgsensei.
 
 ## Features/Advantages
 
@@ -20,7 +20,7 @@ This project has been discontinued. I will continue to merge pull requests howev
 - Runs Like a Desktop App
 - Built in Ad Blocker
 - Auto Nitro Usage
-- God Mode Option
+- ~~God Mode Option~~ (Removed by Blaine Oler)
 - Auto New Game Feature
 - Runs in Background
 
