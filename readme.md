@@ -1,4 +1,4 @@
-# NitroType Cheat v2 - Modified by Blaine Oler
+# NitroType Cheat v2 - by Blaine Oler
 
 ## How to Use
 
@@ -10,7 +10,7 @@
 
 ## Help/Support
 
-Modified version by Blaine Oler. Original project by kgsensei.
+Version by Blaine Oler.
 
 ## Features/Advantages
 
@@ -20,15 +20,14 @@ Modified version by Blaine Oler. Original project by kgsensei.
 - Runs Like a Desktop App
 - Built in Ad Blocker
 - Auto Nitro Usage
-- ~~God Mode Option~~ (Removed by Blaine Oler)
+- ~~God Mode Option~~ (Removed)
 - Auto New Game Feature
 - Runs in Background
 
-Can reach **~4,000** WPM at **~100%** Accuracy*.
 
 ## Legal
 
-The NitroTypeHack2, NitroTypeCheat2, NTH5, and all other aliases of this project are owned and copyright &copy; of kgsensei. Copyright theft is a federal crime and may be reported to international authorities. I, kgsensei, am not responsible for any way that you or anyone else uses this tool. Damages to yourself and/or services are solely your, the users, responsibility. I, kgsensei, do not condone cheating and this tool exists exclusively as documentation/a proof of concept for a generic typing game cheat. The user, you, is responsible for all consequences of using this tool, including, but not limited to, in-game punishments, school suspensions/expulsions, and/or legal action. This legal notice will not protect derivative work creators. Derivative works include forks and clones.
+The NitroTypeHack2, NitroTypeCheat2, NTH5, and all other aliases of this project are owned and copyright &copy; of Blaine. Copyright theft is a federal crime and may be reported to international authorities. I, Blaine, am not responsible for any way that you or anyone else uses this tool. Damages to yourself and/or services are solely your, the users, responsibility. I, Blaine, do not condone cheating and this tool exists exclusively as documentation/a proof of concept for a generic typing game cheat. The user, you, is responsible for all consequences of using this tool, including, but not limited to, in-game punishments, school suspensions/expulsions, and/or legal action. This legal notice will not protect derivative work creators. Derivative works include forks and clones.
 
-I, kgsensei, do not offer protection from tracking and/or provide a privacy policy for 3rd party tools. Use them at your own risk. Additionally, the tool itself as well as third parties may create log files on your computer for debugging/diagnostic reasons. Important third party services included:  
+I, Blaine, do not offer protection from tracking and/or provide a privacy policy for 3rd party tools. Use them at your own risk. Additionally, the tool itself as well as third parties may create log files on your computer for debugging/diagnostic reasons. Important third party services included:  
 - CAPTCHA Solver: [Chrome Webstore Download](https://chromewebstore.google.com/detail/captcha-solver-auto-hcapt/hlifkpholllijblknnmbfagnkjneagid), Privacy Policy: [Privacy Policy](https://www.minirpa.net/captchasolver_Privacy.html)
