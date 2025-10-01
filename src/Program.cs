@@ -15,16 +15,11 @@ namespace NitroType3
             AppDomain.CurrentDomain.UnhandledException += LogApplicationUnhandledException;
             AppDomain.CurrentDomain.ProcessExit += LogApplicationProcessExit;
 
-            Logger.Log("Sending Usage Information to Server");
-            Connections.UsageReport();
-
-            Logger.Log("Checking For Updates");
-            ShouldUpdate();
-
-            Logger.Log("Initializing Window");
             try
             {
+                Logger.Log("Initializing Windows Forms configuration");
                 ApplicationConfiguration.Initialize();
+
                 Logger.Log("Application configuration initialized successfully");
                 
                 Logger.Log("Checking Authentication");
@@ -59,6 +54,17 @@ namespace NitroType3
                 Logger.Log("Starting application");
                 Application.Run(mainForm);
                 Logger.Log("Application started successfully");
+
+
+                Logger.Log("Sending Usage Information to Server");
+                Connections.UsageReport();
+
+                Logger.Log("Checking For Updates");
+                ShouldUpdate();
+
+                Logger.Log("Initializing Window");
+                Application.Run(new Form1());
+
             }
             catch (System.EntryPointNotFoundException)
             {
