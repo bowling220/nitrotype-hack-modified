@@ -11,6 +11,7 @@ namespace NitroType3
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             Logger.Log("========== NEW LAUNCH ==========");
+            
             AppDomain.CurrentDomain.UnhandledException += LogApplicationUnhandledException;
             AppDomain.CurrentDomain.ProcessExit += LogApplicationProcessExit;
 
@@ -24,7 +25,40 @@ namespace NitroType3
             try
             {
                 ApplicationConfiguration.Initialize();
-                Application.Run(new Form1());
+                Logger.Log("Application configuration initialized successfully");
+                
+                Logger.Log("Checking Authentication");
+                try
+                {
+                    if (!AuthService.IsAuthenticated())
+                    {
+                        AuthForm authForm = new AuthForm();
+                        if (authForm.ShowDialog() != DialogResult.OK)
+                        {
+                            Logger.Log("Authentication cancelled by user");
+                            return;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log("Authentication error: " + ex.Message, Logger.Level.Error);
+                    MessageBox.Show(
+                        "Authentication failed: " + ex.Message,
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    return;
+                }
+                
+                Logger.Log("Creating main form");
+                Form1 mainForm = new Form1();
+                Logger.Log("Main form created successfully");
+                
+                Logger.Log("Starting application");
+                Application.Run(mainForm);
+                Logger.Log("Application started successfully");
             }
             catch (System.EntryPointNotFoundException)
             {
@@ -33,6 +67,19 @@ namespace NitroType3
                     "Fatal Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information
+                );
+                return;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("Fatal error during application startup: " + ex.Message, Logger.Level.Error);
+                Logger.Log("Stack trace: " + ex.StackTrace, Logger.Level.Error);
+                
+                MessageBox.Show(
+                    "A fatal error occurred during startup: " + ex.Message + "\n\nCheck the logs for more details.",
+                    "Fatal Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
                 );
                 return;
             }

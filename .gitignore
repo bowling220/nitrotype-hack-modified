@@ -7,3 +7,4 @@ InnoCompileScript.iss
 /src/bin
 src/BuildEnvironment.cs
 src/NitroType3.csproj.user
+secure.config

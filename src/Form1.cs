@@ -8,25 +8,53 @@ namespace NitroType3
         {
             try
             {
-                _ = CoreWebView2Environment.GetAvailableBrowserVersionString();
+                Logger.Log("Form1 constructor started");
+                
+                try
+                {
+                    _ = CoreWebView2Environment.GetAvailableBrowserVersionString();
+                    Logger.Log("WebView2 runtime check passed");
+                }
+                catch (WebView2RuntimeNotFoundException)
+                {
+                    Logger.Log("Missing WebView2 Runtime", Logger.Level.Error);
+                    MessageBox.Show(
+                        "You don't have the Microsoft WebView2 Component installed.\nThis is a requirement to run the cheat.\nPlease install it then run the cheat again.",
+                        "Fatal Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    Environment.Exit(0); // Don't call Close() because window is not initialized yet
+                }
+
+                Logger.Log("Initializing components");
+                InitializeComponent();
+                Logger.Log("Components initialized successfully");
+                
+                Logger.Log("Loading previous user settings");
+                LoadPreviousUser();
+                Logger.Log("User settings loaded successfully");
+                
+                Logger.Log("Setting up webview");
+                SetupWebview();
+                Logger.Log("Webview setup completed successfully");
+
+                Text = "NitroType Cheat v" + Updates.VersionCode;
+                Logger.Log("Form1 constructor completed successfully");
             }
-            catch (WebView2RuntimeNotFoundException)
+            catch (Exception ex)
             {
-                Logger.Log("Missing WebView2 Runtime", Logger.Level.Error);
+                Logger.Log("Fatal error in Form1 constructor: " + ex.Message, Logger.Level.Error);
+                Logger.Log("Stack trace: " + ex.StackTrace, Logger.Level.Error);
+                
                 MessageBox.Show(
-                    "You don't have the Microsoft WebView2 Component installed.\nThis is a requirement to run the cheat.\nPlease install it then run the cheat again.",
+                    "A fatal error occurred while initializing the application: " + ex.Message + "\n\nCheck the logs for more details.",
                     "Fatal Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                Environment.Exit(0); // Don't call Close() because window is not initialized yet
+                throw; // Re-throw to be caught by Program.cs
             }
-
-            InitializeComponent();
-            LoadPreviousUser();
-            SetupWebview();
-
-            Text = "NitroType Cheat v" + Updates.VersionCode;
         }
 
         private void LoadPreviousUser()
@@ -154,6 +182,13 @@ namespace NitroType3
         {
             Logger.Log("Discord Button Clicked");
             Connections.OpenLink(Config.DiscordLink);
+        }
+
+        private void UI_Click_Admin(object sender, EventArgs e)
+        {
+            Logger.Log("Admin Panel Button Clicked");
+            AdminPanel adminPanel = new AdminPanel();
+            adminPanel.ShowDialog();
         }
 
         private async void UI_Click_Start(object sender, EventArgs e)

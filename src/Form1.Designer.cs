@@ -32,6 +32,7 @@
             webView = new Microsoft.Web.WebView2.WinForms.WebView2();
             controls = new Panel();
             discord = new Button();
+            adminButton = new Button();
             usenitros = new CheckBox();
             autogame = new CheckBox();
             autostart = new CheckBox();
@@ -71,6 +72,7 @@
             // 
             controls.BackColor = Color.FromArgb(46, 49, 65);
             controls.Controls.Add(discord);
+            controls.Controls.Add(adminButton);
             controls.Controls.Add(usenitros);
             controls.Controls.Add(autogame);
             controls.Controls.Add(autostart);
@@ -108,6 +110,26 @@
             discord.Text = "Join Team";
             discord.UseVisualStyleBackColor = false;
             discord.Click += UI_Click_Discord;
+            // 
+            // adminButton
+            // 
+            adminButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            adminButton.BackColor = Color.FromArgb(255, 140, 0);
+            adminButton.Cursor = Cursors.Hand;
+            adminButton.FlatAppearance.BorderColor = Color.FromArgb(255, 140, 0);
+            adminButton.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 140, 0);
+            adminButton.FlatAppearance.MouseOverBackColor = Color.FromArgb(255, 140, 0);
+            adminButton.FlatStyle = FlatStyle.Flat;
+            adminButton.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            adminButton.ForeColor = Color.White;
+            adminButton.Location = new Point(5, 730);
+            adminButton.Margin = new Padding(5);
+            adminButton.Name = "adminButton";
+            adminButton.Size = new Size(190, 30);
+            adminButton.TabIndex = 0;
+            adminButton.Text = "Admin Panel";
+            adminButton.UseVisualStyleBackColor = false;
+            adminButton.Click += UI_Click_Admin;
             // 
             // usenitros
             // 
@@ -317,5 +339,6 @@
         private CheckBox autogame;
         private CheckBox usenitros;
         private Button discord;
+        private Button adminButton;
     }
 }

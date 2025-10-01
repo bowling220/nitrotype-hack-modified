@@ -1,0 +1,7 @@
+# Secure Configuration File
+# Copy this file to secure.config and fill in your actual values
+# DO NOT commit secure.config to version control!
+
+FIREBASE_PROJECT_ID=your-actual-project-id
+FIREBASE_API_KEY=your-actual-api-key
+ADMIN_PASSWORD=your-secure-admin-password

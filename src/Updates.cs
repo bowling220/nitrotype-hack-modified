@@ -2,7 +2,7 @@
 {
     class Updates
     {
-        public static string VersionCode = "4.6.2";
+        public static string VersionCode = "5.0.1";
 
         public static async Task<Boolean> ShouldUpdate()
         {
