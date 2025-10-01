@@ -19,6 +19,7 @@
             Properties.Settings.Default["UsrCnf_AutoStart"] = Config.AutoStart;
             Properties.Settings.Default["UsrCnf_AutoGame"] = Config.AutoGame;
             Properties.Settings.Default["UsrCnf_UseNitros"] = Config.UseNitros;
+            // Properties.Settings.Default["UsrCnf_AutoEmoji"] = Config.AutoEmoji; // Temporarily disabled
 
             Properties.Settings.Default["UsrCnf_Accuracy"] = Config.Accuracy;
             Properties.Settings.Default["UsrCnf_AccuracyV"] = Config.AccuracyVariancy;

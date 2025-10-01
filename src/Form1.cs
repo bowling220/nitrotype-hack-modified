@@ -40,6 +40,9 @@ namespace NitroType3
                 Logger.Log("Webview setup completed successfully");
 
                 Text = "NitroType Cheat v" + Updates.VersionCode;
+                
+                // Auto emoji is now handled by JavaScript message when race starts
+                
                 Logger.Log("Form1 constructor completed successfully");
             }
             catch (Exception ex)
@@ -55,6 +58,12 @@ namespace NitroType3
                 );
                 throw; // Re-throw to be caught by Program.cs
             }
+            
+            // Wire up the FormClosing event handler
+            this.FormClosing += Form1_FormClosing;
+            
+            // Initialize emoji indicator
+            UpdateEmojiIndicator();
         }
 
         private void LoadPreviousUser()
@@ -68,15 +77,23 @@ namespace NitroType3
                 {
                     Config.TypingRate = UserConfig.Get("UsrCnf_TypingRate_Real");
                     typingRateSlider.Value = UserConfig.Get("UsrCnf_TypingRate_Visual");
+                    // Update typing rate label
+                    int Total = typingRateSlider.Maximum + typingRateSlider.Minimum;
+                    int RealRate = Total - typingRateSlider.Value;
+                    int WPMCalculation = (int)(60 / ((double)RealRate / 1000) / 5);
+                    typingRateSliderLabel.Text = "Typing Rate: ~" + WPMCalculation;
 
                     Config.TypingRateVariancy = UserConfig.Get("UsrCnf_TypingRateV");
                     typingRateVarianceSlider.Value = Config.TypingRateVariancy;
+                    typingRateVarianceLabel.Text = "Typing Rate Variance: ±" + typingRateVarianceSlider.Value;
 
                     Config.Accuracy = UserConfig.Get("UsrCnf_Accuracy");
                     accuracySlider.Value = Config.Accuracy;
+                    accuracySliderLabel.Text = "Accuracy: " + Config.Accuracy + "%";
 
                     Config.AccuracyVariancy = UserConfig.Get("UsrCnf_AccuracyV");
                     accuracyVarianceSlider.Value = Config.AccuracyVariancy;
+                    accuracyVarianceLabel.Text = "Accuracy Variance: ±" + Config.AccuracyVariancy + "%";
 
                     Config.AutoStart = UserConfig.Get("UsrCnf_AutoStart");
                     autostart.Checked = Config.AutoStart;
@@ -90,11 +107,15 @@ namespace NitroType3
                         UI_Change_Start_Colors(214, 47, 58);
                     }
 
-                    Config.AutoGame = UserConfig.Get("UsrCnf_AutoGame");
-                    autogame.Checked = Config.AutoGame;
+                    // Force AutoGame and UseNitros to be checked by default
+                    Config.AutoGame = true;
+                    Config.UseNitros = true;
+                    autogame.Checked = true;
+                    usenitros.Checked = true;
 
-                    Config.UseNitros = UserConfig.Get("UsrCnf_UseNitros");
-                    usenitros.Checked = Config.UseNitros;
+       // Config.AutoEmoji = UserConfig.Get("UsrCnf_AutoEmoji"); // Temporarily disabled
+       // autoemoji.Checked = Config.AutoEmoji; // Temporarily disabled
+       autoemoji.Checked = Config.AutoEmoji; // Use default value
                 }
                 catch (Exception)
                 {
@@ -139,6 +160,12 @@ namespace NitroType3
 
             Logger.Log("Loading NitroType.com");
             webView.Source = new Uri("https://nitrotype.com");
+            
+            // Mark as initialized
+            isInitialized = true;
+            
+            // Update emoji indicator after page loads
+            UpdateEmojiIndicator();
         }
 
         private void UI_Change_Start_Colors(int r, int b, int g)
@@ -163,18 +190,114 @@ namespace NitroType3
             {
                 UI_Change_Start_Colors(214, 47, 58);
             }
+            UserConfig.Save();
         }
 
         private void UI_Update_Autogame(object sender, EventArgs e)
         {
             Logger.Log("Auto Game Value Changed:" + autogame.Checked.ToString());
             Config.AutoGame = autogame.Checked;
+            UserConfig.Save();
         }
 
         private void UI_Update_Usenitros(object sender, EventArgs e)
         {
             Logger.Log("Use Nitros Value Changed:" + usenitros.Checked.ToString());
             Config.UseNitros = usenitros.Checked;
+            UserConfig.Save();
+        }
+
+        private void UI_Update_Autoemoji(object sender, EventArgs e)
+        {
+            Logger.Log("Auto Emoji Value Changed:" + autoemoji.Checked.ToString());
+            Config.AutoEmoji = autoemoji.Checked;
+            
+            // Show warning when user enables Auto Emoji (but not during form closing)
+            if (autoemoji.Checked && !this.IsDisposed && this.Visible)
+            {
+                MessageBox.Show(
+                    "⚠️ Auto Emoji Feature Warning ⚠️\n\n" +
+                    "The Auto Emoji feature is still in development and may not work reliably.\n\n" +
+                    "• It may require manual interaction to trigger\n" +
+                    "• The feature might not work in all scenarios\n" +
+                    "• We're working to improve its reliability\n\n" +
+                    "If you experience issues, please uncheck this option.",
+                    "Development Feature",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+            }
+            
+            // Update emoji indicator visibility
+            UpdateEmojiIndicator();
+            
+            // Auto emoji is now handled by JavaScript message when race starts
+            UserConfig.Save();
+        }
+
+        private void UpdateEmojiIndicator()
+        {
+            if (emojiIndicator == null) return;
+            
+            // Show indicator only if Auto Emoji is enabled and we're on the start screen
+            bool shouldShow = Config.AutoEmoji && IsOnStartScreen();
+            emojiIndicator.Visible = shouldShow;
+            
+            if (shouldShow)
+            {
+                // Set text and styling to indicate user needs to click
+                emojiIndicator.Text = "Click here once before race starts";
+                emojiIndicator.ForeColor = Color.LimeGreen;
+                emojiIndicator.BackColor = Color.FromArgb(46, 49, 65);
+                emojiIndicator.BorderStyle = BorderStyle.FixedSingle;
+            }
+        }
+
+        private bool IsOnStartScreen()
+        {
+            try
+            {
+                if (webView?.CoreWebView2 == null) return false;
+                
+                // Check if we're on the main NitroType page (not in a race)
+                string currentUrl = webView.Source?.ToString() ?? "";
+                return currentUrl.Contains("nitrotype.com") && !currentUrl.Contains("/race");
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private async void SimulateEmojiKeyPress()
+        {
+            if (!Config.AutoEmoji || !isInitialized) return;
+            
+            try
+            {
+                // Check if WebView2 is still valid
+                if (webView?.CoreWebView2 == null)
+                {
+                    Logger.Log("WebView2 is not initialized, skipping emoji key press");
+                    return;
+                }
+                
+                // Randomly select emoji key 1-7
+                Random random = new Random();
+                int emojiKey = random.Next(1, 8); // 1-7 inclusive
+                
+                Logger.Log("Simulating emoji key press using DevTools protocol - Key: " + emojiKey);
+                
+                // Try the "char" approach like other characters in Controller.cs
+                string emojiArgs = @"{ ""type"": ""char"", ""text"": """ + emojiKey + @""" }";
+                await webView.CoreWebView2.CallDevToolsProtocolMethodAsync("Input.dispatchKeyEvent", emojiArgs);
+                
+                Logger.Log("Emoji key '" + emojiKey + "' pressed successfully");
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("Error simulating emoji key press: " + ex.Message, Logger.Level.Error);
+            }
         }
 
 
@@ -222,20 +345,23 @@ namespace NitroType3
 
         private void UI_Slider_AccuracyVariance(object sender, EventArgs e)
         {
-            accuracyVarianceLabel.Text = "Accuracy Variance: �" + accuracyVarianceSlider.Value;
+            accuracyVarianceLabel.Text = "Accuracy Variance: ±" + accuracyVarianceSlider.Value;
             Config.AccuracyVariancy = accuracyVarianceSlider.Value;
+            UserConfig.Save();
         }
 
         private void UI_Slider_AccuracySlider(object sender, EventArgs e)
         {
             accuracySliderLabel.Text = "Accuracy: " + accuracySlider.Value + "%";
             Config.Accuracy = accuracySlider.Value;
+            UserConfig.Save();
         }
 
         private void UI_Slider_TypingRateVariance(object sender, EventArgs e)
         {
-            typingRateVarianceLabel.Text = "Typing Rate Variance: �" + typingRateVarianceSlider.Value;
+            typingRateVarianceLabel.Text = "Typing Rate Variance: ±" + typingRateVarianceSlider.Value;
             Config.TypingRateVariancy = typingRateVarianceSlider.Value;
+            UserConfig.Save();
         }
 
         private void UI_Slider_TypingRate(object sender, EventArgs e)
@@ -246,6 +372,7 @@ namespace NitroType3
             int WPMCalculation = (int)(60 / ((double)RealRate / 1000) / 5);
             typingRateSliderLabel.Text = "Typing Rate: ~" + WPMCalculation;
             UserConfig.Set("UsrCnf_TypingRate_Visual", typingRateSlider.Value);
+            UserConfig.Save();
         }
 
         private void InjectAutoStart()
@@ -269,7 +396,53 @@ namespace NitroType3
                     }
                 }
 
+                // Auto Emoji Function - Now handled by C# timer
+                function autoEmoji() {
+                    console.log('Auto emoji function called - handled by C# timer');
+                }
+
                 setTimeout(() => {" + funcName + @"();}, 2000);
+                
+                // Auto emoji - race detection only (no immediate trigger)
+                if(" + Config.AutoEmoji.ToString().ToLower() + @") {
+                    let emojiTriggered = false;
+                    let raceCheckCount = 0;
+                    
+                    // Check for race start every 200ms
+                    let raceCheckInterval = setInterval(() => {
+                        if(!emojiTriggered) {
+                            raceCheckCount++;
+                            
+                            // Check for multiple race indicators
+                            let raceStarted = document.getElementsByClassName('raceChat').length > 0 ||
+                                            document.querySelector('.race-container') !== null ||
+                                            document.querySelector('[data-race]') !== null ||
+                                            document.querySelector('.typing-area') !== null ||
+                                            document.querySelector('.race') !== null ||
+                                            document.querySelector('[class*=""race""]') !== null ||
+                                            document.querySelector('[class*=""typing""]') !== null;
+                            
+                            if(raceStarted) {
+                                emojiTriggered = true;
+                                clearInterval(raceCheckInterval);
+                                console.log('Race started - triggering auto emoji');
+                                setTimeout(() => {
+                                    window.chrome.webview.postMessage('TRIGGER_EMOJI');
+                                }, 1500);
+                            }
+                            
+                            // Fallback: trigger after 10 seconds if no race detected
+                            if(raceCheckCount > 50) { // 50 * 200ms = 10 seconds
+                                emojiTriggered = true;
+                                clearInterval(raceCheckInterval);
+                                console.log('Auto emoji fallback triggered after 10 seconds');
+                                setTimeout(() => {
+                                    window.chrome.webview.postMessage('TRIGGER_EMOJI');
+                                }, 1000);
+                            }
+                        }
+                    }, 200);
+                }
 
                 setInterval(() => {
                     const m = ""Validated!Playon."";
@@ -304,6 +477,12 @@ namespace NitroType3
                         MessageBoxButtons.OK
                     );
                 }
+                else if (BrowserData == "TRIGGER_EMOJI")
+                {
+                    // Trigger emoji when race starts
+                    Logger.Log("Race started - triggering auto emoji");
+                    SimulateEmojiKeyPress();
+                }
                 else
                 {
                     Controller.SimulateTypingText(BrowserData, webView);
@@ -336,16 +515,60 @@ namespace NitroType3
 
         private void RequestBlocker(object? sender, CoreWebView2WebResourceRequestedEventArgs e)
         {
-            bool Blocked = AdBlocker.IsBlocked(e.Request.Uri);
-
-            if (Blocked)
+            try
             {
-                e.Response = webView.CoreWebView2.Environment.CreateWebResourceResponse(
-                    null,
-                    404,
-                    "Resource Blocked by Client",
-                    null
-                );
+                if (webView?.CoreWebView2 == null) return;
+                
+                bool Blocked = AdBlocker.IsBlocked(e.Request.Uri);
+
+                if (Blocked)
+                {
+                    e.Response = webView.CoreWebView2.Environment.CreateWebResourceResponse(
+                        null,
+                        404,
+                        "Resource Blocked by Client",
+                        null
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("Error in RequestBlocker: " + ex.Message, Logger.Level.Error);
+            }
+        }
+
+        private void Form1_FormClosing(object? sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                Logger.Log("Application closing - cleaning up WebView2");
+                
+                // Stop any ongoing operations first
+                if (webView?.CoreWebView2 != null)
+                {
+                    try
+                    {
+                        // Clear event handlers to prevent callbacks during disposal
+                        webView.CoreWebView2.WebResourceRequested -= RequestBlocker;
+                        webView.CoreWebView2.WebResourceResponseReceived -= RacePageLoadedChecker;
+                        webView.CoreWebView2.WebMessageReceived -= WebMessageRecieved;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log("Error clearing WebView2 event handlers: " + ex.Message, Logger.Level.Error);
+                    }
+                }
+                
+                // Dispose the WebView2 control
+                if (webView != null)
+                {
+                    webView.Dispose();
+                    webView = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("Error during cleanup: " + ex.Message, Logger.Level.Error);
             }
         }
     }

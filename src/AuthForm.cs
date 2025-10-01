@@ -7,6 +7,7 @@ namespace NitroType3
         private TextBox keyTextBox;
         private Button validateButton;
         private Button cancelButton;
+        private Button requestKeyButton;
         private Label statusLabel;
         private bool isValidated = false;
 
@@ -20,6 +21,7 @@ namespace NitroType3
             this.keyTextBox = new TextBox();
             this.validateButton = new Button();
             this.cancelButton = new Button();
+            this.requestKeyButton = new Button();
             this.statusLabel = new Label();
             this.SuspendLayout();
             
@@ -58,6 +60,17 @@ namespace NitroType3
             this.cancelButton.Click += CancelButton_Click;
             
             // 
+            // requestKeyButton
+            // 
+            this.requestKeyButton.Location = new Point(12, 130);
+            this.requestKeyButton.Name = "requestKeyButton";
+            this.requestKeyButton.Size = new Size(300, 30);
+            this.requestKeyButton.TabIndex = 4;
+            this.requestKeyButton.Text = "Don't have a key? Click here to request one";
+            this.requestKeyButton.UseVisualStyleBackColor = true;
+            this.requestKeyButton.Click += RequestKeyButton_Click;
+            
+            // 
             // statusLabel
             // 
             this.statusLabel.AutoSize = true;
@@ -72,7 +85,8 @@ namespace NitroType3
             // 
             this.AutoScaleDimensions = new SizeF(7F, 15F);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new Size(324, 141);
+            this.ClientSize = new Size(324, 181);
+            this.Controls.Add(this.requestKeyButton);
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.validateButton);
@@ -149,6 +163,27 @@ namespace NitroType3
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void RequestKeyButton_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                // Open the Padlet link for key requests
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "https://padlet.com/Examined/exam-team-chat-rz7ase234p7dyf1l",
+                    UseShellExecute = true
+                });
+                
+                statusLabel.Text = "Opening key request page...";
+                statusLabel.ForeColor = Color.Blue;
+            }
+            catch (Exception ex)
+            {
+                statusLabel.Text = "Error opening key request page: " + ex.Message;
+                statusLabel.ForeColor = Color.Red;
+            }
         }
 
 

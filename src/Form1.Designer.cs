@@ -33,6 +33,9 @@
             controls = new Panel();
             discord = new Button();
             adminButton = new Button();
+            autoemoji = new CheckBox();
+            toolTip = new ToolTip();
+            emojiIndicator = new Label();
             usenitros = new CheckBox();
             autogame = new CheckBox();
             autostart = new CheckBox();
@@ -73,6 +76,8 @@
             controls.BackColor = Color.FromArgb(46, 49, 65);
             controls.Controls.Add(discord);
             controls.Controls.Add(adminButton);
+            controls.Controls.Add(autoemoji);
+            controls.Controls.Add(emojiIndicator);
             controls.Controls.Add(usenitros);
             controls.Controls.Add(autogame);
             controls.Controls.Add(autostart);
@@ -146,6 +151,37 @@
             usenitros.TabIndex = 0;
             usenitros.Text = "Use Nitros";
             usenitros.CheckedChanged += UI_Update_Usenitros;
+            // 
+            // autoemoji
+            // 
+            autoemoji.Cursor = Cursors.Hand;
+            autoemoji.FlatAppearance.BorderColor = Color.FromArgb(214, 47, 58);
+            autoemoji.FlatAppearance.CheckedBackColor = Color.FromArgb(214, 47, 58);
+            autoemoji.FlatAppearance.MouseDownBackColor = Color.FromArgb(214, 47, 58);
+            autoemoji.FlatAppearance.MouseOverBackColor = Color.FromArgb(214, 47, 58);
+            autoemoji.Font = new Font("Segoe UI", 10F);
+            autoemoji.ForeColor = Color.White;
+            autoemoji.Location = new Point(5, 327);
+            autoemoji.Name = "autoemoji";
+            autoemoji.Size = new Size(104, 24);
+            autoemoji.TabIndex = 0;
+            autoemoji.Text = "Auto Emoji (Still in Dev)";
+            autoemoji.CheckedChanged += UI_Update_Autoemoji;
+            toolTip.SetToolTip(autoemoji, "Auto Emoji feature is still in development. May require manual interaction to trigger.");
+            // 
+            // emojiIndicator
+            // 
+            emojiIndicator.BackColor = Color.FromArgb(46, 49, 65);
+            emojiIndicator.BorderStyle = BorderStyle.FixedSingle;
+            emojiIndicator.Font = new Font("Segoe UI", 8F);
+            emojiIndicator.ForeColor = Color.LimeGreen;
+            emojiIndicator.Location = new Point(5, 355);
+            emojiIndicator.Name = "emojiIndicator";
+            emojiIndicator.Size = new Size(104, 20);
+            emojiIndicator.TabIndex = 0;
+            emojiIndicator.Text = "Click here once before race starts";
+            emojiIndicator.TextAlign = ContentAlignment.MiddleCenter;
+            emojiIndicator.Visible = false;
             // 
             // autogame
             // 
@@ -329,6 +365,7 @@
         private TrackBar typingRateSlider;
         private Label typingRateSliderLabel;
         private Microsoft.Web.WebView2.WinForms.WebView2 webView;
+        private bool isInitialized = false;
         private TrackBar typingRateVarianceSlider;
         private Label typingRateVarianceLabel;
         private TrackBar accuracySlider;
@@ -338,7 +375,10 @@
         private CheckBox autostart;
         private CheckBox autogame;
         private CheckBox usenitros;
+        private CheckBox autoemoji;
+        private ToolTip toolTip;
         private Button discord;
         private Button adminButton;
+        private Label emojiIndicator;
     }
 }
