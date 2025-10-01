@@ -94,7 +94,6 @@ namespace NitroType3
             this.adminPanel.Controls.Add(this.statusLabel);
             this.adminPanel.Controls.Add(this.refreshButton);
             this.adminPanel.Controls.Add(this.keysListBox);
-            this.adminPanel.Controls.Add(this.deleteKeyButton);
             this.adminPanel.Controls.Add(this.deactivateKeyButton);
             this.adminPanel.Controls.Add(this.createKeyButton);
             this.adminPanel.Controls.Add(this.expiryDatePicker);
@@ -158,7 +157,7 @@ namespace NitroType3
             this.deactivateKeyButton.FlatAppearance.BorderSize = 0;
             this.deactivateKeyButton.FlatStyle = FlatStyle.Flat;
             this.deactivateKeyButton.ForeColor = Color.White;
-            this.deactivateKeyButton.Location = new Point(120, 200);
+            this.deactivateKeyButton.Location = new Point(120, 250);
             this.deactivateKeyButton.Name = "deactivateKeyButton";
             this.deactivateKeyButton.Size = new Size(100, 30);
             this.deactivateKeyButton.TabIndex = 3;
@@ -176,7 +175,7 @@ namespace NitroType3
             this.deleteKeyButton.FlatAppearance.BorderSize = 0;
             this.deleteKeyButton.FlatStyle = FlatStyle.Flat;
             this.deleteKeyButton.ForeColor = Color.White;
-            this.deleteKeyButton.Location = new Point(10, 200);
+            this.deleteKeyButton.Location = new Point(10, 250);
             this.deleteKeyButton.Name = "deleteKeyButton";
             this.deleteKeyButton.Size = new Size(100, 30);
             this.deleteKeyButton.TabIndex = 4;
@@ -197,6 +196,7 @@ namespace NitroType3
             this.keysListBox.Size = new Size(300, 200);
             this.keysListBox.TabIndex = 4;
             this.keysListBox.MouseDoubleClick += KeysListBox_MouseDoubleClick;
+            this.keysListBox.MouseDown += KeysListBox_MouseDown;
             
             // 
             // refreshButton
@@ -396,10 +396,10 @@ namespace NitroType3
                     {
                         string status = key.IsActive ? "Active" : "Inactive";
                         string expiry = key.ExpiryDate?.ToString("yyyy-MM-dd") ?? "No expiry";
-                        string displayText = $"{key.KeyName} - {status} - Expires: {expiry}";
+                        string displayText = $"{key.KeyName} - {status} - Expires: {expiry} - [Double-click: Toggle] [Right-click: Delete]";
                         keysListBox.Items.Add(displayText);
                     }
-                    statusLabel.Text = $"Loaded {keys.Count} keys - Double-click to toggle status";
+                    statusLabel.Text = $"Loaded {keys.Count} keys - Double-click to toggle, Right-click to delete";
                 }
                 else
                 {
@@ -466,6 +466,52 @@ namespace NitroType3
                     statusLabel.Text = "Error toggling key status";
                     MessageBox.Show("Error toggling key status: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Logger.Log("Error toggling key status: " + ex.Message, Logger.Level.Error);
+                }
+            }
+        }
+
+        private async void KeysListBox_MouseDown(object? sender, MouseEventArgs e)
+        {
+            if (!isAuthenticated) return;
+            
+            // Check if it's a right-click
+            if (e.Button == MouseButtons.Right)
+            {
+                // Get the item at the mouse position
+                int index = keysListBox.IndexFromPoint(e.Location);
+                if (index >= 0 && index < currentKeys.Count)
+                {
+                    var selectedKey = currentKeys[index];
+                    
+                    var result = MessageBox.Show($"Are you sure you want to DELETE key: {selectedKey.KeyName}?\n\nThis action cannot be undone!", 
+                        "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    
+                    if (result == DialogResult.Yes)
+                    {
+                        try
+                        {
+                            statusLabel.Text = $"Deleting {selectedKey.KeyName}...";
+                            
+                            bool success = await AuthService.DeleteKeyAsync(selectedKey.KeyName);
+                            
+                            if (success)
+                            {
+                                statusLabel.Text = $"Deleted {selectedKey.KeyName}";
+                                LoadKeys(); // Refresh the list
+                            }
+                            else
+                            {
+                                statusLabel.Text = "Failed to delete key";
+                                MessageBox.Show("Failed to delete key. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            statusLabel.Text = "Error deleting key";
+                            MessageBox.Show("Error deleting key: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Logger.Log("Error deleting key: " + ex.Message, Logger.Level.Error);
+                        }
+                    }
                 }
             }
         }

@@ -188,46 +188,23 @@ namespace NitroType3
             {
                 Logger.Log("Activating key: " + key);
                 
-                // First, get the current key data to preserve the expiry date
-                string getUrl = $"{FIREBASE_URL}/keys/{key}";
-                var getRequest = new HttpRequestMessage(HttpMethod.Get, getUrl);
-                getRequest.Headers.Add("X-Goog-Api-Key", FIREBASE_API_KEY);
-                
-                var getResponse = await httpClient.SendAsync(getRequest);
-                if (!getResponse.IsSuccessStatusCode)
-                {
-                    Logger.Log("Failed to get key data for activation");
-                    return false;
-                }
-                
-                var getContent = await getResponse.Content.ReadAsStringAsync();
-                var keyData = JsonSerializer.Deserialize<KeyData>(getContent);
-                
-                if (keyData?.fields == null)
-                {
-                    Logger.Log("Key data is null or fields are null");
-                    return false;
-                }
-                
-                // Now update with preserved expiry date
-                string updateUrl = $"{FIREBASE_URL}/keys/{key}";
-                var updateRequest = new HttpRequestMessage(HttpMethod.Patch, updateUrl);
-                updateRequest.Headers.Add("X-Goog-Api-Key", FIREBASE_API_KEY);
+                // Use the same approach as DeactivateKeyAsync but with active = true
+                string url = $"{FIREBASE_URL}/keys/{key}";
+                var request = new HttpRequestMessage(HttpMethod.Patch, url);
+                request.Headers.Add("X-Goog-Api-Key", FIREBASE_API_KEY);
                 
                 var updateData = new
                 {
                     fields = new
                     {
-                        active = new { booleanValue = true },
-                        expiryDate = keyData.fields.expiryDate, // Preserve the original expiry date
-                        createdDate = keyData.fields.createdDate // Also preserve created date
+                        active = new { booleanValue = true }
                     }
                 };
                 
                 string jsonContent = JsonSerializer.Serialize(updateData);
-                updateRequest.Content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+                request.Content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
                 
-                var response = await httpClient.SendAsync(updateRequest);
+                var response = await httpClient.SendAsync(request);
                 Logger.Log("Activate key response status: " + response.StatusCode);
                 
                 if (!response.IsSuccessStatusCode)
